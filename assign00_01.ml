@@ -17,5 +17,5 @@
 
 *)
 
-let sqrt (n : int) : int =
+let sqrt (n : int) : int = int_of_float (sqrt (float_of_int n))
   (* YOUR CODE GOES HERE *)

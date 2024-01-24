@@ -17,5 +17,5 @@
 
 *)
 
-let is_prime (n : int) : bool =
+let is_prime (n : int) : bool = if n>1 then n mod 2 == 1 else false
   (* YOUR CODE GOES HERE *)
