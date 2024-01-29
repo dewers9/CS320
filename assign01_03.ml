@@ -23,5 +23,8 @@
 
  *)
 
-let fast_fib (n : int) : int =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+let rec fast_fib (n : int) : int = 
+  match n with 
+     0 -> 1
+  |  1 -> 1
+  |  n -> fast_fib(n-1) + fast_fib(n-2)
