@@ -21,5 +21,8 @@
 
  *)
 
-let string_rev (s : string) : string =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+let rec string_rev (s : string) : string =
+  if String.length s == 1 then 
+    s
+  else
+    String.cat (string_rev (String.sub s 1 ((String.length s) - 1))) (String.make 1 (String.get s 0))
