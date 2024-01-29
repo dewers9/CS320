@@ -14,5 +14,14 @@
 
  *)
 
+let rec sum_helper (n:int) : int =
+  if n == 1 then 
+    1
+  else
+    (Int.div n 2) + (sum_helper (Int.div n 2))
+
 let is_perfect (n : int) : bool =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+  if n == (sum_helper n) then 
+    true
+  else
+    false
