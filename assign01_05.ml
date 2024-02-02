@@ -37,5 +37,18 @@
 
  *)
 
-let block_text (s : string) (min_width : int) (max_width : int) : string =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+ let block_text (s : string) (min_width : int) (max_width : int) : string =
+  let rec go s2 =
+    let s_len = String.length s2 in
+    if s_len > max_width then
+      String.sub s2 0 max_width ^ "\n" ^ go (String.sub s2 max_width (s_len - max_width))
+    else
+      s2
+  in
+  go s
+
+
+  let _ = assert (block_text "ABCDEFGHIJ" 0 3 = "ABC\nDEF\nGHI\nJ")
+  let _ = assert (block_text "ABCDEFGHIJ" 2 3 = "AB\nCD\nEF\nGH\nIJ")
+  let _ = assert (block_text "ABCDEFGHIJ" 0 4 = "ABCD\nEFGH\nIJ")
+  let _ = assert (block_text "ABCDEFGHIJ" 3 4 = "ABCD\nEFGH\nIJ")
