@@ -14,14 +14,12 @@
 
  *)
 
-let rec sum_helper (n:int) : int =
-  if n == 1 then 
-    1
-  else
-    (Int.div n 2) + (sum_helper (Int.div n 2))
-
-let is_perfect (n : int) : bool =
-  if n == (sum_helper n) then 
-    true
-  else
-    false
+ let is_perfect (n : int) : bool =
+  let rec sum_divisors i acc =
+    if i = 1 then acc + 1
+    else if n mod i = 0 then sum_divisors (i - 1) (acc + i + (if n / i <> i then n / i else 0))
+    else sum_divisors (i - 1) acc
+  in
+  let sqrt_n = int_of_float (sqrt (float_of_int n)) in
+  (* Subtract n from the sum of divisors since we want proper divisors only *)
+  sum_divisors sqrt_n 0 - n = n
