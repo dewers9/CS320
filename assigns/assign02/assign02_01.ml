@@ -32,9 +32,9 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
     match lst with
     | [] -> 
       if List.is_empty i_acc then
-        (StringList s_acc ):: acc
+        acc @ [StringList (s_acc)]
       else
-        (IntList i_acc) :: acc
+        acc @ [IntList (i_acc)]
 
     | h :: t ->
       if List.is_empty i_acc && List.is_empty s_acc then
@@ -48,7 +48,7 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
       else if List.is_empty i_acc then
         match h with 
         | Int n ->
-          loop t [n] [] ((StringList (s_acc)) :: acc)
+          loop t [n] [] (acc @ [StringList (s_acc)])
         | String s ->
           loop t [] (s_acc @ [s]) (acc)
       
@@ -57,16 +57,16 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
         | Int n ->
           loop t (i_acc @ [n]) [] (acc)
         | String s ->
-          loop t [] [s] ((IntList (i_acc)) :: acc)
+          loop t [] [s] (acc @ [IntList (i_acc)])
     in
-    List.rev (loop l [] [] [])
+    (loop l [] [] [])
 
 
 
 let test_in = [Int 2; Int 3; String "a"; String "b"; Int 4; String "c"]
 let test_out = [IntList [2;3]; StringList ["a";"b"]; IntList [4]; StringList ["c"]]
 
-let test_in2 = [Int 2; Int 3; Int 4; Int 5; Int 6; Int 7;String "a"; String "b"; Int 4; String "c"; String "d"; String "e"; String "f"; String "g"; Int 3; Int 4; Int 5; String "c"; String "d"; String "e"; String "f"; String "g"]
+let test_in2 = [Int 2; Int 3; Int 4; Int 5; Int 6; Int 7;String "a"; String "b"; Int 4; String "c"; String "d"; String "e"; String "f"; String "g"; Int 3; Int 4; Int 5]
 
 let _ = assert (convert test_in = test_out)
 let x = convert test_in2
