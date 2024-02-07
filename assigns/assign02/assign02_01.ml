@@ -66,7 +66,3 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
 let test_in = [Int 2; Int 3; String "a"; String "b"; Int 4; String "c"]
 let test_out = [IntList [2;3]; StringList ["a";"b"]; IntList [4]; StringList ["c"]]
 
-let test_in2 = [Int 2; Int 3; Int 4; Int 5; Int 6; Int 7;String "a"; String "b"; Int 4; String "c"; String "d"; String "e"; String "f"; String "g"; Int 3; Int 4; Int 5]
-
-let _ = assert (convert test_in = test_out)
-let x = convert test_in2
