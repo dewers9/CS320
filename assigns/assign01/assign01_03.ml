@@ -23,8 +23,8 @@
 
  *)
 
-let rec fast_fib (n : int) : int = 
+let rec fast_fib (n : int) (n_1 : int) : int = 
   match n with 
-     0 -> 1
+  |  0 -> 1
   |  1 -> 1
-  |  n -> fast_fib(n-1) + fast_fib(n-2)
+  |  n -> (fast_fib (n-1) (n-2))

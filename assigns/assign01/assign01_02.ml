@@ -14,14 +14,21 @@
 
  *)
 
- let is_perfect (n : int) : bool =
-  let rec sum_divisors i acc =
-    if i = 1 then 
-      acc + 1
-    else if n mod i = 0 then 
-      sum_divisors (i - 1) (acc + i + (if n / i <> i then n / i else 0))
-    else 
-      sum_divisors (i - 1) acc
+ let sum_of_proper_divisors (n : int) : int =
+  let rec aux acc i =
+    if i >= n then acc
+    else if n mod i = 0 then aux (acc + i) (i + 1)
+    else aux acc (i + 1)
   in
-  let sqrt_n = int_of_float (sqrt (float_of_int n)) in
-    sum_divisors sqrt_n 0 - n = n
+  if n > 0 then aux 0 1 else 0
+;;
+
+let is_perfect (n : int) : bool =
+  n > 0 && (sum_of_proper_divisors n) = n
+;;
+
+let () =
+  assert (is_perfect 6);
+  assert (is_perfect 28);
+  assert (not (is_perfect 24));
+  assert (not (is_perfect 0));  
