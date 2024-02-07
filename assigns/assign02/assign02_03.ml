@@ -63,7 +63,6 @@ let update_recent (u : user) (time : int) (stale : int) : user =
         update_recent_posts rest (p::recent_posts) (List.rev old_posts)
       else
         update_recent_posts rest (recent_posts) (old_posts @ [p])
-
   in
 
   let (recent_posts, old_posts) = update_recent_posts (u.old_posts @ u.recent_posts) [] [] in

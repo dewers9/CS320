@@ -28,21 +28,45 @@ type int_or_string
      *)
 
 let rec convert (l : int_or_string list) : int_list_or_string_list list =
-  let rec append_to_int_list (lst : int_or_string list) (acc : int list) (list_list : int_list_or_string_list list) : int_list_or_string_list list=
+  let rec loop (lst : int_or_string list) (i_acc : int list) (s_acc : string list) (acc : int_list_or_string_list list ): int_list_or_string_list list =
     match lst with
-    | [] -> (List.rev ((IntList (List.rev acc)) :: list_list)) (* Return accumulated IntList when the input list is empty *)
-    | Int i :: rest -> append_to_int_list rest (i :: acc) list_list (* Append Int to accumulator and continue recursion *)
-    | String _ :: _ -> append_to_str_list lst [] ((IntList (List.rev acc)) :: list_list) (* Stop recursion and return StringList when a String is encountered *)
-  and append_to_str_list (lst : int_or_string list) (acc : string list) (list_list : int_list_or_string_list list) : int_list_or_string_list list =
-    match lst with
-    | [] -> (List.rev ((StringList (List.rev acc)) :: list_list)) (* Return accumulated IntList when the input list is empty *)
-    | String i :: rest -> append_to_str_list rest (i :: acc) list_list (* Append Int to accumulator and continue recursion *)
-    | Int _ :: _ -> append_to_int_list lst [] ((StringList (List.rev acc)) :: list_list)(* Stop recursion and return StringList when a String is encountered *)
-  in
+    | [] -> 
+      if List.is_empty i_acc then
+        (StringList s_acc ):: acc
+      else
+        (IntList i_acc) :: acc
 
-  append_to_int_list l [] []
+    | h :: t ->
+      if List.is_empty i_acc && List.is_empty s_acc then
+        match h with 
+        | Int n ->
+          loop t (( n) :: i_acc) [] []
+        | String s ->
+          loop t [] (( s) :: s_acc) []
+      
+
+      else if List.is_empty i_acc then
+        match h with 
+        | Int n ->
+          loop t [n] [] ((StringList (s_acc)) :: acc)
+        | String s ->
+          loop t [] (s_acc @ [s]) (acc)
+      
+      else
+        match h with 
+        | Int n ->
+          loop t (i_acc @ [n]) [] (acc)
+        | String s ->
+          loop t [] [s] ((IntList (i_acc)) :: acc)
+    in
+    List.rev (loop l [] [] [])
+
 
 
 let test_in = [Int 2; Int 3; String "a"; String "b"; Int 4; String "c"]
 let test_out = [IntList [2;3]; StringList ["a";"b"]; IntList [4]; StringList ["c"]]
+
+let test_in2 = [Int 2; Int 3; Int 4; Int 5; Int 6; Int 7;String "a"; String "b"; Int 4; String "c"; String "d"; String "e"; String "f"; String "g"; Int 3; Int 4; Int 5; String "c"; String "d"; String "e"; String "f"; String "g"]
+
 let _ = assert (convert test_in = test_out)
+let x = convert test_in2
