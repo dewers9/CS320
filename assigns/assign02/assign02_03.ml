@@ -54,10 +54,13 @@ type user = {
   recent_posts : post list ;
 }
 
+let compare_age post1 post2 =
+  post2.timestamp - post1.timestamp
+
 let update_recent (u : user) (time : int) (stale : int) : user =
   let rec update_recent_posts (posts : post list) (recent_posts) (old_posts) = 
     match posts with
-    | [] -> (recent_posts, old_posts)
+    | [] -> (List.sort compare_age recent_posts, List.sort compare_age old_posts)
     | p :: rest -> 
       if (time - stale) < p.timestamp then
         update_recent_posts rest (p::recent_posts) (List.rev old_posts)
