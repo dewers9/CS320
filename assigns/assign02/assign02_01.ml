@@ -27,7 +27,7 @@ type int_or_string
    go into rec function that will create a new sublist
      *)
 
-let convert (l : int_or_string list) : int_list_or_string_list list =
+let rec convert (l : int_or_string list) : int_list_or_string_list list =
   let rec loop (lst : int_or_string list) (i_acc : int list) (s_acc : string list) (acc : int_list_or_string_list list ): int_list_or_string_list list =
     match lst with
     | [] -> 
@@ -61,3 +61,6 @@ let convert (l : int_or_string list) : int_list_or_string_list list =
     in
   loop l [] [] []
 
+let test_in = [Int 2; Int 3; String "a"; String "b"; Int 4; String "call"; String "doll"; String "ere"]
+let test_out = [IntList [2;3]; StringList ["a";"b"]; IntList [4]; StringList ["call";"doll";"ere"]]
+let _ = assert (convert test_in = test_out)
