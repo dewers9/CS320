@@ -27,7 +27,7 @@ type int_or_string
    go into rec function that will create a new sublist
      *)
 
-let rec convert (l : int_or_string list) : int_list_or_string_list list =
+let convert (l : int_or_string list) : int_list_or_string_list list =
   let rec loop (lst : int_or_string list) (i_acc : int list) (s_acc : string list) (acc : int_list_or_string_list list ): int_list_or_string_list list =
     match lst with
     | [] -> 
@@ -40,9 +40,9 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
       if List.is_empty i_acc && List.is_empty s_acc then
         match h with 
         | Int n ->
-          loop t (( n) :: i_acc) [] []
+          loop t [n] [] []
         | String s ->
-          loop t [] (( s) :: s_acc) []
+          loop t [] [s] []
       
 
       else if List.is_empty i_acc then
@@ -59,10 +59,5 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
         | String s ->
           loop t [] [s] (acc @ [IntList (i_acc)])
     in
-    (loop l [] [] [])
-
-
-
-let test_in = [Int 2; Int 3; String "a"; String "b"; Int 4; String "c"]
-let test_out = [IntList [2;3]; StringList ["a";"b"]; IntList [4]; StringList ["c"]]
+  loop l [] [] []
 
