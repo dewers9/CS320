@@ -12,6 +12,11 @@
 
 *)
 
+let is_empty lst =
+  match lst with
+  | [] -> true  (* The list is empty *)
+  | _ -> false  (* The list is not empty *)
+
 type int_list_or_string_list
   = IntList of int list
   | StringList of string list
@@ -23,14 +28,14 @@ type int_or_string
 let rec convert (l : int_or_string list) : int_list_or_string_list list =
   let rec go (lst : int_or_string list) (i_acc : int list) (s_acc : string list) (acc : int_list_or_string_list list ): int_list_or_string_list list =
     match lst with
-    | [] -> []
-      (* if List.is_empty i_acc then
+    | [] -> 
+      if is_empty i_acc then
         acc @ [StringList (s_acc)]
       else
-        acc @ [IntList (i_acc)] *)
+        acc @ [IntList (i_acc)]
 
-    | h :: t -> []
-      (* if List.is_empty i_acc && List.is_empty s_acc then
+    | h :: t ->
+      if is_empty i_acc && is_empty s_acc then
         match h with 
         | Int n ->
           go t [n] [] []
@@ -38,7 +43,7 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
           go t [] [s] []
       
 
-      else if List.is_empty i_acc then
+      else if is_empty i_acc then
         match h with 
         | Int n ->
           go t [n] [] (acc @ [StringList (s_acc)])
@@ -50,10 +55,10 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
         | Int n ->
           go t (i_acc @ [n]) [] (acc)
         | String s ->
-          go t [] [s] (acc @ [IntList (i_acc)]) *)
+          go t [] [s] (acc @ [IntList (i_acc)])
     in
   go l [] [] []
 
-(* let test_in = [String "call"; String "doll"; String "ere"; Int 200; Int 3; String "a"; String "b"; Int 4; String "call"; String "doll"; String "ere"]
+let test_in = [String "call"; String "doll"; String "ere"; Int 200; Int 3; String "a"; String "b"; Int 4; String "call"; String "doll"; String "ere"]
 let test_out = [StringList ["call";"doll";"ere"]; IntList [200;3]; StringList ["a";"b"]; IntList [4]; StringList ["call";"doll";"ere"]]
-let _ = assert (convert test_in = test_out) *)
+let _ = assert (convert test_in = test_out)
