@@ -23,7 +23,7 @@ type int_or_string
 let rec convert (l : int_or_string list) : int_list_or_string_list list =
   let rec go (lst : int_or_string list) (i_acc : int list) (s_acc : string list) (acc : int_list_or_string_list list ): int_list_or_string_list list =
     match lst with
-    | [] -> assert false
+    | [] -> []
       (* if List.is_empty i_acc then
         acc @ [StringList (s_acc)]
       else
