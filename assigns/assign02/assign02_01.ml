@@ -23,37 +23,34 @@ type int_or_string
 let rec convert (l : int_or_string list) : int_list_or_string_list list =
   let rec go (lst : int_or_string list) (i_acc : int list) (s_acc : string list) (acc : int_list_or_string_list list ): int_list_or_string_list list =
     match lst with
-    | [] -> 
-      if List.is_empty i_acc then
+    | [] -> assert false
+      (* if List.is_empty i_acc then
         acc @ [StringList (s_acc)]
       else
-        acc @ [IntList (i_acc)]
+        acc @ [IntList (i_acc)] *)
 
     | h :: t ->
       if List.is_empty i_acc && List.is_empty s_acc then
-        assert false
-        (* match h with 
+        match h with 
         | Int n ->
           go t [n] [] []
         | String s ->
-          go t [] [s] [] *)
+          go t [] [s] []
       
 
       else if List.is_empty i_acc then
-        assert false
-        (* match h with 
+        match h with 
         | Int n ->
           go t [n] [] (acc @ [StringList (s_acc)])
         | String s ->
-          go t [] (s_acc @ [s]) (acc) *)
+          go t [] (s_acc @ [s]) (acc)
       
       else
-        assert false
-        (* match h with 
+        match h with 
         | Int n ->
           go t (i_acc @ [n]) [] (acc)
         | String s ->
-          go t [] [s] (acc @ [IntList (i_acc)]) *)
+          go t [] [s] (acc @ [IntList (i_acc)])
     in
   go l [] [] []
 
