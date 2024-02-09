@@ -29,8 +29,8 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
       else
         acc @ [IntList (i_acc)] *)
 
-    | h :: t ->
-      if List.is_empty i_acc && List.is_empty s_acc then
+    | h :: t -> []
+      (* if List.is_empty i_acc && List.is_empty s_acc then
         match h with 
         | Int n ->
           go t [n] [] []
@@ -50,7 +50,7 @@ let rec convert (l : int_or_string list) : int_list_or_string_list list =
         | Int n ->
           go t (i_acc @ [n]) [] (acc)
         | String s ->
-          go t [] [s] (acc @ [IntList (i_acc)])
+          go t [] [s] (acc @ [IntList (i_acc)]) *)
     in
   go l [] [] []
 
