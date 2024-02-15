@@ -152,18 +152,21 @@ let mkMatrix (rs : 'a list list) : ('a matrix, error) result =
     helper rs (-1) (-1) a
 
 
-  let transpose {num_rows; num_cols; rows} =
-    let rec transpose_helper cols acc =
-      match cols with
-      | [] -> acc
-      | col :: rest ->
-        let transposed_col = List.map List.hd acc in
-        let remaining_cols = List.map List.tl acc in
-        transpose_helper rest (transposed_col :: remaining_cols)
-    in
-    let transposed_rows = transpose_helper rows (List.init num_cols (fun _ -> [])) in
-    {num_rows = num_cols; num_cols = num_rows; rows = transposed_rows}
-    
+let transpose (m : 'a matrix) : 'a matrix =
+  (* check that everything is copasetic *)
+  let num_rows = m.num_rows in
+  let num_cols = m.num_cols in
+  let transposed_rows =
+    Array.init num_cols (fun j ->
+        List.init num_rows (fun i ->
+            List.nth (List.nth m.rows i) j
+          )
+      )
+  in
+  { num_rows = num_cols;
+    num_cols = num_rows;
+    rows = Array.to_list transposed_rows;
+  }
 
   let multiply (m : float matrix) (n : float matrix) : (float matrix, error) result =
     let rec dot_product row col =
