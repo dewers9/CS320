@@ -26,4 +26,47 @@ type 'a concatlist
   | Concat of 'a concatlist * 'a concatlist
 
 let sort (l : 'a concatlist) : 'a list =
-  assert false (* TODO *)
+  
+  let rec sort_cons a b =
+    match a with
+    
+    | Single m1, Single n1 ->
+
+  let rec helper (lis : 'a concatlist) (acc : 'a list) : 'a list =
+    (* Pull head *)
+    match lis with 
+    | Nil -> acc
+    | Concat(h,t) ->
+      (* Check if the head is a Concat or a Single *)
+      match h with ->
+      | Single m -> 
+        (* If single get second *)
+        match t with
+        | Nil -> (acc :: [m])
+        | Concat(th,tt) -> 
+          match th ->
+          (* Check if the second is a Concat or a Single *)
+          | Single n ->
+            if n > m then
+              helper tt (acc :: [m]) :: [n] 
+          | Concat n->
+              
+
+
+      | Concat m -> 
+      
+
+    (* Check if the second is a Concat or a Single *)
+    
+
+
+(* 
+
+if is_Concat then
+  open and find min
+
+
+*)
+    
+    
+      

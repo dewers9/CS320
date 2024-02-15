@@ -115,11 +115,68 @@ type 'a matrix = {
   rows : ('a list) list ;
 }
 
+
+
+
+let rec len (series : 'a list) (acc : int): int = 
+  match series with
+  | [] -> acc
+  | h::t -> len t (acc+1)
+
+let append (mat : 'a matrix) (series : 'a list) =
+  {mat with 
+  rows = series :: mat.rows; 
+  num_cols = mat.num_cols + 1;
+  num_rows = (len series 0)}
+
+
 let mkMatrix (rs : 'a list list) : ('a matrix, error) result =
-  assert false (* TODO *)
+  let rec helper (r : 'a list list) (m : int) (n : int) (acc : 'a matrix): ('a matrix, error) result = 
+    match r with
+    | h::t ->
+      let x = (len h 0) in
+      (match m,n with
+      | -1, -1 -> (helper t 1 x (append acc h))
+      | _ -> 
+        (if x <> n then
+          Error UnevenRows
+        else
+          helper t (m+1) (n) (append acc h)))
+    | [] -> 
+      (if m > 0 && n > 0 then
+        Ok acc
+      else if (n = 0) then
+        Error ZeroRows
+      else 
+        Error ZeroCols
+      )
+    
+  in
+  let a =
+    { num_rows = 0 ;
+      num_cols = 0 ;
+      rows = [[]] ;
+    }
+  in
+  (helper (rs) (-1) (-1) (a))
+
+
 
 let transpose (m : 'a matrix) : 'a matrix =
-  assert false (* TODO *)
+  (* check that everything is copasetic *)
+  let num_rows = m.num_rows in
+  let num_cols = m.num_cols in
+  let transposed_rows =
+    Array.init num_cols (fun j ->
+        List.init num_rows (fun i ->
+            List.nth (List.nth m.rows i) j
+          )
+      )
+  in
+  { num_rows = num_cols;
+    num_cols = num_rows;
+    rows = Array.to_list transposed_rows;
+  }
 
 let multiply (m : float matrix) (n : float matrix) : (float matrix, error) result =
   assert false (* TODO *)

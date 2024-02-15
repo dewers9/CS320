@@ -27,6 +27,11 @@
 
    2. It has the same number of `Cons`s, `Fork`s and `Nil`s as `f`.
 
+      2       4
+      |      / \
+      4     2   5
+     / \    |
+    3   5   3
    Example:
    let f = Cons (2, Fork(4, Cons(3, Nil), Cons (5, Nil)))
    let g = Fork (4, Cons (2, Cons (3, Nil)), Cons(5, Nil))
@@ -42,5 +47,25 @@ type 'a forklist
   | Cons of 'a * 'a forklist
   | Fork of 'a * 'a forklist * 'a forklist
 
-let delay_cons (f : int forklist) : int forklist =
-  assert false (* TODO *)
+(* All that were doing is imagine a binary tree, 
+   if there is a fork with a leg on each side and a previous part above then move the fork up dont worry about the Cons *)
+
+let rec delay_cons (f : int forklist) : int forklist =
+  
+  match f with
+  | Nil -> Nil
+  | Cons(h,t) -> 
+    match t with
+    | Cons (n,m) -> Cons(n,delay_cons m)
+    | Fork (x, lxs, rxs) -> 
+      match h > x with
+      | true -> 
+        (* need a recursive call here *)
+        Fork(x, lxs, Cons(h,rxs))
+      | false -> 
+        (* need a recursive call here *)
+        Fork(x, Cons(h,lxs), rxs)   
+
+let f = Cons (2, Fork(4, Cons(3, Nil), Cons (5, Nil)))
+let g = Fork (4, Cons (2, Cons (3, Nil)), Cons(5, Nil))
+let _ = assert (delay_cons f = g)

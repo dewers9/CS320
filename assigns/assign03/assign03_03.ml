@@ -48,5 +48,43 @@ type bexp =
   | And of bexp * bexp
   | Or of bexp * bexp
 
-let eval (v : (string * bool) list) (e : bexp) : bool option =
-  assert false (* TODO *)
+let rec eval (v : (string * bool) list) (e : bexp) : bool option =
+  
+  let rec get_bool (v_in: (string * bool) list) (id:string) : bool option =
+    match v_in with
+    | [] -> None
+    | h::t ->
+      (match h with
+      |(this_id,tf) -> 
+          if this_id = id then Some tf
+        else
+          get_bool t id)
+  in
+  
+  match e with
+  | And (exp1, exp2) ->
+    (match (eval v exp1, eval v exp2) with
+    | (Some true, Some true) -> Some true
+    | (None, _) | (_, None) -> None
+    | _ -> Some false)
+  | Or (exp1, exp2) ->
+    (match (eval v exp1, eval v exp2) with
+    | (Some true, _) | (_, Some true) -> Some true
+    | (None, _) | (_, None) -> None
+    | _ -> Some false)
+  | Not exp ->
+    (match (eval v exp) with
+    | None -> None
+    | Some true -> Some false
+    | Some false -> Some true
+    | _ -> None)
+  | Var exp ->
+    get_bool v exp
+  
+
+
+let v = [("a", true); ("b", true); ("c", true)]
+let e = And (Var "a", Or (Var "b", Var "c"))
+let f = Not (Var "d")
+let _ = assert (eval v e = Some true)
+let _ = assert (eval v f = None)
