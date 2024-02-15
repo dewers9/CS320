@@ -156,42 +156,64 @@ let transpose (m : 'a matrix) : 'a matrix =
   (* check that everything is copasetic *)
   let num_rows = m.num_rows in
   let num_cols = m.num_cols in
-  let transposed_rows =
-    Array.init num_cols (fun j ->
-        List.init num_rows (fun i ->
-            List.nth (List.nth m.rows i) j
-          )
-      )
+  let transpose_mat matrix =
+    match matrix with
+    | [] -> []
+    | []::_ -> []
+    | _ ->
+      let rec aux acc = function
+        | []::_ -> List.rev acc
+        | m -> aux ((List.map List.hd m)::acc) (List.map List.tl m)
+      in aux [] matrix
   in
   { num_rows = num_cols;
     num_cols = num_rows;
-    rows = Array.to_list transposed_rows;
+    rows = transpose_mat m.rows;
   }
 
-  let multiply (m : float matrix) (n : float matrix) : (float matrix, error) result =
-    let rec dot_product row col =
-      match row, col with
-      | [], [] -> 0.0
-      | x::xs, y::ys -> x *. y +. dot_product xs ys
-      | _ -> failwith "Uneven row/column lengths in matrix multiplication"
-    in
-    let rec multiply_row_with_cols row cols =
-      match cols with
-      | [] -> []
-      | col :: rest ->
-        let product = dot_product row col in
-        product :: multiply_row_with_cols row rest
-    in
-    let rec multiply_rows_with_cols rows cols =
-      match rows with
-      | [] -> []
-      | row :: rest ->
-        let new_row = multiply_row_with_cols row cols in
-        new_row :: multiply_rows_with_cols rest cols
-    in
-    if m.num_cols <> n.num_rows then
-      Error MulMismatch
-    else
-      let transposed_n = transpose n in
-      let multiplied_rows = multiply_rows_with_cols m.rows transposed_n.rows in
-      Ok { num_rows = m.num_rows; num_cols = n.num_cols; rows = multiplied_rows }
+let multiply (m : float matrix) (n : float matrix) : (float matrix, error) result =
+  let rec dot_product row col =
+    match row, col with
+    | [], [] -> 0.0
+    | x::xs, y::ys -> x *. y +. dot_product xs ys
+    | _ -> failwith "Uneven row/column lengths in matrix multiplication"
+  in
+  let rec multiply_row_with_cols row cols =
+    match cols with
+    | [] -> []
+    | col :: rest ->
+      let product = dot_product row col in
+      product :: multiply_row_with_cols row rest
+  in
+  let rec multiply_rows_with_cols rows cols =
+    match rows with
+    | [] -> []
+    | row :: rest ->
+      let new_row = multiply_row_with_cols row cols in
+      new_row :: multiply_rows_with_cols rest cols
+  in
+  if m.num_cols <> n.num_rows then
+    Error MulMismatch
+  else
+    let transposed_n = transpose n in
+    let multiplied_rows = multiply_rows_with_cols m.rows transposed_n.rows in
+    Ok { num_rows = m.num_rows; num_cols = n.num_cols; rows = multiplied_rows }
+
+
+let a2 =
+  { num_rows = 2 ;
+    num_cols = 2 ;
+    rows = [[1.;2.;3.];[4.;5.;6.]] ;
+  }
+
+let a =
+  { num_rows = 2 ;
+    num_cols = 2 ;
+    rows = [[1.;2.];[3.;4.]] ;
+  }
+
+let _ = assert (multiply a a = Ok {
+  num_rows = 2 ;
+  num_cols = 2 ;
+  rows = [[7.;10.];[15.;22.]] ;
+  })
