@@ -130,35 +130,27 @@ let append (mat : 'a matrix) (series : 'a list) =
   num_rows = (len series 0)}
 
 
-let mkMatrix (rs : 'a list list) : ('a matrix, error) result =
-  let rec helper (r : 'a list list) (m : int) (n : int) (acc : 'a matrix): ('a matrix, error) result = 
-    match r with
-    | h::t ->
-      let x = (len h 0) in
-      (match m,n with
-      | -1, -1 -> (helper t 1 x (append acc h))
-      | _ -> 
-        (if x <> n then
-          Error UnevenRows
-        else
-          helper t (m+1) (n) (append acc h)))
-    | [] -> 
-      (if m > 0 && n > 0 then
-        Ok acc
-      else if (n = 0) then
-        Error ZeroRows
-      else 
-        Error ZeroCols
-      )
-    
-  in
-  let a =
-    { num_rows = 0 ;
-      num_cols = 0 ;
-      rows = [[]] ;
-    }
-  in
-  (helper (rs) (-1) (-1) (a))
+  let mkMatrix (rs : 'a list list) : ('a matrix, error) result =
+    let rec helper r m n acc =
+      match r with
+      | [] ->
+        if m > 0 && n > 0 then Ok acc
+        else if n = 0 then Error ZeroRows
+        else Error ZeroCols
+      | h :: t ->
+        let x = List.length h in
+        match m, n with
+        | -1, -1 -> helper t 1 x {num_rows = m; num_cols = x; rows = [h]}
+        | _, _ ->
+          if x <> n then Error UnevenRows
+          else helper t (m + 1) n {acc with rows = acc.rows @ [h]}
+    in
+    match rs with
+    | [] -> Error ZeroRows
+    | h :: _ ->
+      let a = {num_rows = 0; num_cols = 0; rows = [[]]} in
+      helper rs (-1) (-1) a
+  
 
 
 
