@@ -63,16 +63,6 @@ let rec for_loop (l : 'a list) (f : 'a -> 'b list) : 'b list =
   | [] -> []
   | h :: t -> (f h) @ (for_loop t f)
 
-let make_tups (n : 'a) =
-
-  1--n
-  |> List.map snd
-  |> List.flatten 
-  |> List.map thd
-  |> List.flatten 
-
-  
-  
 let rec snd (j : 'a) : ('a list) list=
   let rec loop (j : 'a) (k : 'a) : ('a list) list =
     match j with 
@@ -91,7 +81,14 @@ let rec thd (jk : 'a list) =
   | j::k::[] -> 
     loop j j k
   | _ -> assert false
-    
+
+let make_tups (n : 'a) =
+
+  range 1 n
+  |> List.map snd
+  |> List.flatten 
+  |> List.map thd
+  |> List.flatten 
 
 let filter_helper (t : (int * int * int)) : bool =
   match t with
