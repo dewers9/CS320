@@ -78,12 +78,25 @@
    (* ( 1 + 2x + 3x^2 ) ( 4 + 5x ) = 4 + 13x + 22x^2 + 15x^3 *)
 *)
 
+let rec range i j =
+  if i >= j then
+    []
+  else
+    i :: range (i + 1) j
+
 let rec map2 (f : 'a -> 'b -> 'c) (l : 'a list) (r : 'b list) : 'c list =
-  assert false (* TODO *)
+  match l,r with
+  | [],_ | _,[] -> []
+  | lh :: lt , rh :: rt -> (f lh rh) :: (map2 f lt rt)
 
-let consecutives (len : int) (l : 'a list) : 'a list list =
-  assert false (* TODO *)
-
+let rec consecutives (len : int) (l : 'a list) : 'a list list =
+  if (List.length l) = len then
+    [l]
+  else
+    match l with
+    | [] -> assert false
+    | h::t -> map2 (fun a b -> a) l (range 0 len) :: (consecutives len t)
+  
 let list_conv
     (f : 'a list -> 'b list -> 'c)
     (l : 'a list)
@@ -91,9 +104,9 @@ let list_conv
   List.map (f l) (consecutives (List.length l) r)
 
 let poly_mult_helper (u : int list) (v : int list) : int =
-  assert false (* TODO *)
+  List.fold_left ( + ) 0 (map2 ( * ) v (List.rev u))
 
 let poly_mult (p : int list) (q : int list) : int list =
   let padding = List.init (List.length p - 1) (fun _ -> 0) in
   let padded_q = padding @ q @ padding in
-  list_conv poly_mult_helper p padded_q
+  list_conv (poly_mult_helper) p padded_q
